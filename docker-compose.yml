@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+    app:
+        build: .
+        container_name: ci3-app
+        ports:
+            - "8081:80"
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        extra_hosts:
+            - "localhost:127.0.0.1"
+        networks:
+            - ci3net
+        restart: always
+    db:
+        image: mariadb:10.6
+        container_name: ci3-db
+        environment:
+            MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+            MARIADB_DATABASE: ${MARIADB_DATABASE}
+            MARIADB_USER: ${MARIADB_USER}
+            MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+        ports:
+            - "3307:3306"
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - ci3net
+        restart: always
+volumes:
+    dbdata:
+
+networks:
+    ci3net:
